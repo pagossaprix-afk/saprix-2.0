@@ -1,0 +1,38 @@
+﻿
+
+StatusCode        : 200
+StatusDescription : OK
+Content           : {"success":true,"slug_request
+                    ed":"zapatilla-world-kids-neg
+                    ro-neon","raw_product":{"id":
+                    6972,"name":"Zapatilla 
+                    World- Kids Negro + NeÃ³n","s
+                    lug":"zapatilla-world-kids-ne
+                    gro-neon","price":"94990","im
+                    age...
+RawContent        : HTTP/1.1 200 OK
+                    vary: rsc, 
+                    next-router-state-tree, 
+                    next-router-prefetch, 
+                    next-router-segment-prefetch
+                    Connection: keep-alive
+                    Keep-Alive: timeout=5
+                    Transfer-Encoding: chunked
+                    Content-Type: applica...
+Forms             : {}
+Headers           : {[vary, rsc, 
+                    next-router-state-tree, 
+                    next-router-prefetch, next-ro
+                    uter-segment-prefetch], 
+                    [Connection, keep-alive], 
+                    [Keep-Alive, timeout=5], 
+                    [Transfer-Encoding, 
+                    chunked]...}
+Images            : {}
+InputFields       : {}
+Links             : {}
+ParsedHtml        : System.__ComObject
+RawContentLength  : 9557
+
+
+

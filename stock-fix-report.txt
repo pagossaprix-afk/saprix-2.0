@@ -1,0 +1,92 @@
+
+============================================================
+REPARACION MASIVA DE STOCK
+============================================================
+Modo: SIMULACRO (Dry Run)
+Stock por defecto a asignar: 10
+
+1. Buscando productos variables...
+
+Total productos variables encontrados: 24
+
+Analizando: Morral Saprix (ID: 6442)
+  ✅ Todo OK (Ya gestionan stock)
+
+Analizando: Zapatilla World Berlin - Azul oscuro+ Celeste (ID: 6865)
+  ✅ Todo OK (Ya gestionan stock)
+
+Analizando: Zapatilla World Tokio - Verde jade (ID: 6901)
+  ✅ Todo OK (Ya gestionan stock)
+
+Analizando: Zapatilla World Tokio - Blanco + Fucsia (ID: 6912)
+  ✅ Todo OK (Ya gestionan stock)
+
+Analizando: Balón 60 - 62 Fútbol de salón Colores surtidos (ID: 1710)
+  ✅ Todo OK (Ya gestionan stock)
+
+Analizando: Zapatilla World - Londres (ID: 9282)
+  ✅ Todo OK (Ya gestionan stock)
+
+Analizando: Zapatilla World Tokio - Azul + Verde (ID: 9011)
+  ✅ Todo OK (Ya gestionan stock)
+
+Analizando: Zapatilla Roma -  Rojo (ID: 8814)
+  ✅ Todo OK (Ya gestionan stock)
+
+Analizando: Zapatilla Roma -  Blanco + Azul (ID: 8804)
+  ✅ Todo OK (Ya gestionan stock)
+
+Analizando: Zapatilla Roma - Verde Neón (ID: 8764)
+  ✅ Todo OK (Ya gestionan stock)
+
+Analizando: Zapatilla Roma - Azul + Verde (ID: 8733)
+  ✅ Todo OK (Ya gestionan stock)
+
+Analizando: Zapatilla World- Kids Blanco+ Azul (ID: 6982)
+  ✅ Todo OK (Ya gestionan stock)
+
+Analizando: Zapatilla World- Kids Negro + Neón (ID: 6972)
+  ✅ Todo OK (Ya gestionan stock)
+
+Analizando: Zapatilla World- Kids Rojo (ID: 6942)
+  ✅ Todo OK (Ya gestionan stock)
+
+Analizando: Zapatilla World Tokio - Negro + azul (ID: 6923)
+  ✅ Todo OK (Ya gestionan stock)
+
+Analizando: Zapatilla World Berlin - Blanco + azul (ID: 6889)
+  ✅ Todo OK (Ya gestionan stock)
+
+Analizando: Zapatilla World Berlin - Negro + Verde (ID: 6878)
+  ✅ Todo OK (Ya gestionan stock)
+
+Analizando: Petos Deportivos para entrenar (ID: 6527)
+  ✅ Todo OK (Ya gestionan stock)
+
+Analizando: Guantes Profesionales de Futsal (ID: 6436)
+  ✅ Todo OK (Ya gestionan stock)
+
+Analizando: Maletín Saprix (ID: 4289)
+  ✅ Todo OK (Ya gestionan stock)
+
+Analizando: Guayera Deportiva (ID: 4276)
+  ✅ Todo OK (Ya gestionan stock)
+
+Analizando: Media Técnica - Antideslizante (ID: 3944)
+  ✅ Todo OK (Ya gestionan stock)
+
+Analizando: Media Pernera (ID: 3929)
+  ✅ Todo OK (Ya gestionan stock)
+
+Analizando: Media Futbolera Clásica (ID: 3912)
+  ✅ Todo OK (Ya gestionan stock)
+
+============================================================
+RESUMEN FINAL
+============================================================
+Productos analizados: 24
+Productos que necesitan corrección: 0
+Total variaciones a corregir: 0
+
+Para aplicar estos cambios ejecuta:
+npx tsx scripts/fix-all-stock.ts --apply

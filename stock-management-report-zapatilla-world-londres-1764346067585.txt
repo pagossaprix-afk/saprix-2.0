@@ -1,0 +1,51 @@
+
+================================================================================
+HABILITAR GESTION DE STOCK
+================================================================================
+Producto: zapatilla-world-londres
+Modo: APLICAR CAMBIOS
+Stock por defecto: 10
+================================================================================
+
+Producto encontrado: Zapatilla World - Londres (ID: 9282)
+
+Obteniendo variaciones...
+Total de variaciones: 27
+
+================================================================================
+CAMBIOS A REALIZAR
+================================================================================
+[+] Color: Verde Jade           | Talla:       | Mantener stock: 12
+[+] Color: Verde Jade           | Talla:       | Mantener stock: 3
+[+] Color: Verde Jade           | Talla:       | Mantener stock: 73
+[+] Color: Verde Jade           | Talla:       | Mantener stock: 68
+[+] Color: Verde Jade           | Talla:       | Mantener stock: 70
+[+] Color: Verde Jade           | Talla:       | Mantener stock: 34
+[+] Color: Verde Jade           | Talla:       | Mantener stock: 23
+[+] Color: Verde Jade           | Talla:       | Mantener stock: 26
+[+] Color: Verde Jade           | Talla:       | Mantener stock: 11
+[+] Color: Negro                | Talla:       | Mantener stock: 3
+[+] Color: Negro                | Talla:       | Mantener stock: 3
+[+] Color: Negro                | Talla:       | Mantener stock: 76
+[+] Color: Negro                | Talla:       | Mantener stock: 84
+[+] Color: Negro                | Talla:       | Mantener stock: 87
+[+] Color: Negro                | Talla:       | Mantener stock: 29
+[+] Color: Negro                | Talla:       | Mantener stock: 25
+[+] Color: Negro                | Talla:       | Mantener stock: 27
+[+] Color: Negro                | Talla:       | Mantener stock: 10
+[+] Color: Blanco + Azul        | Talla:       | Mantener stock: 12
+[+] Color: Blanco + Azul        | Talla:       | Mantener stock: 9
+[+] Color: Blanco + Azul        | Talla:       | Mantener stock: 80
+[+] Color: Blanco + Azul        | Talla:       | Mantener stock: 92
+[+] Color: Blanco + Azul        | Talla:       | Mantener stock: 100
+[+] Color: Blanco + Azul        | Talla:       | Mantener stock: 42
+[+] Color: Blanco + Azul        | Talla:       | Mantener stock: 25
+[+] Color: Blanco + Azul        | Talla:       | Mantener stock: 30
+[+] Color: Blanco + Azul        | Talla:       | Mantener stock: 13
+
+================================================================================
+RESUMEN
+================================================================================
+Total variaciones: 27
+Ya gestionan stock: 27
+Necesitan actualizacion: 0

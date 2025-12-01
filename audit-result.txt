@@ -1,0 +1,65 @@
+
+AUDITORIA DE PRODUCTO: zapatilla-world-londres
+
+================================================================================
+
+Producto: Zapatilla World - Londres
+ID: 9282
+Tipo: variable
+Gestiona stock: NO
+
+Total de variaciones: 27
+Colores unicos: 3
+Tallas unicas: 1
+
+================================================================================
+DISPONIBILIDAD POR COLOR
+================================================================================
+
+Color: Blanco + Azul
+  Talla : DISPONIBLE - Stock: 12
+  Talla : DISPONIBLE - Stock: 9
+  Talla : DISPONIBLE - Stock: 80
+  Talla : DISPONIBLE - Stock: 92
+  Talla : DISPONIBLE - Stock: 100
+  Talla : DISPONIBLE - Stock: 42
+  Talla : DISPONIBLE - Stock: 25
+  Talla : DISPONIBLE - Stock: 30
+  Talla : DISPONIBLE - Stock: 13
+
+Color: Negro
+  Talla : DISPONIBLE - Stock: 3
+  Talla : DISPONIBLE - Stock: 3
+  Talla : DISPONIBLE - Stock: 76
+  Talla : DISPONIBLE - Stock: 84
+  Talla : DISPONIBLE - Stock: 87
+  Talla : DISPONIBLE - Stock: 29
+  Talla : DISPONIBLE - Stock: 25
+  Talla : DISPONIBLE - Stock: 27
+  Talla : DISPONIBLE - Stock: 10
+
+Color: Verde Jade
+  Talla : DISPONIBLE - Stock: 12
+  Talla : DISPONIBLE - Stock: 3
+  Talla : DISPONIBLE - Stock: 73
+  Talla : DISPONIBLE - Stock: 68
+  Talla : DISPONIBLE - Stock: 70
+  Talla : DISPONIBLE - Stock: 34
+  Talla : DISPONIBLE - Stock: 23
+  Talla : DISPONIBLE - Stock: 26
+  Talla : DISPONIBLE - Stock: 11
+
+================================================================================
+ESTADISTICAS
+================================================================================
+En stock: 27 de 27 (100.0%)
+Agotadas: 0 de 27 (0.0%)
+Con gestion de stock: 27 de 27 (100.0%)
+
+================================================================================
+PROBLEMAS DETECTADOS
+================================================================================
+
+[ALERTA] TODAS las variaciones estan marcadas como "en stock"
+Esto indica que no hay gestion de stock real habilitada.
+El frontend mostrara todas las opciones como disponibles.
