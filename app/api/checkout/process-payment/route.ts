@@ -55,6 +55,10 @@ export async function POST(request: Request) {
                 {
                     key: '_billing_cedula',
                     value: customer.documentId
+                },
+                {
+                    key: 'numero_documento',
+                    value: customer.documentId
                 }
             ],
             shipping_lines: [
