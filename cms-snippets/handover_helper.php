@@ -51,17 +51,28 @@ function saprix_handle_cart_handover()
             }
         }
 
-    // Note: We don't redirect here, we let the page continue to load the Checkout
-    // The query params remain in the URL so step 2 can read them.
+    // C. Store Handover Data in Session
+    $handover_data = $_GET;
+    WC()->session->set('saprix_handover_data', $handover_data);
+    
+    // Force Save
+    WC()->cart->calculate_totals();
+    WC()->cart->save();
+
+    // D. Redirect to clean Checkout URL (avoids "Empty Cart" issues and re-submission)
+    wp_safe_redirect(wc_get_checkout_url());
+    exit;
 }
 
-// 2. Pre-fill Checkout Fields from URL parameters
+// 2. Pre-fill Checkout Fields from Session
 add_filter('woocommerce_checkout_get_value', 'saprix_prefill_checkout_fields', 10, 2);
 
 function saprix_prefill_checkout_fields($value, $input)
 {
-    // Only if we are in our handover mode
-    if (!isset($_GET['saprix_handover'])) {
+    // Retrieve data from session
+    $data = WC()->session->get('saprix_handover_data');
+    
+    if (empty($data) || !is_array($data)) {
         return $value;
     }
 
@@ -70,22 +81,17 @@ function saprix_prefill_checkout_fields($value, $input)
         return $value;
     }
 
-    // Map URL params to fields. 
-    // Example: ?billing_first_name=Juan maps to $input 'billing_first_name'
-    if (isset($_GET[$input])) {
-        return sanitize_text_field($_GET[$input]);
+    // Map stored params to fields. 
+    if (isset($data[$input])) {
+        return sanitize_text_field($data[$input]);
     }
 
     // Special handling for Cedula variations
     $cedula_keys = array('billing_cedula', 'cedula', 'billing_dni', 'dni', 'billing_identification');
     if (in_array($input, $cedula_keys)) {
-        // Try to find ANY cedula param in the URL
-        if (isset($_GET['billing_cedula']))
-            return sanitize_text_field($_GET['billing_cedula']);
-        if (isset($_GET['cedula']))
-            return sanitize_text_field($_GET['cedula']);
-        if (isset($_GET['documentId']))
-            return sanitize_text_field($_GET['documentId']);
+        if (isset($data['billing_cedula'])) return sanitize_text_field($data['billing_cedula']);
+        if (isset($data['cedula'])) return sanitize_text_field($data['cedula']);
+        if (isset($data['documentId'])) return sanitize_text_field($data['documentId']);
     }
 
 
