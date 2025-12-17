@@ -6,7 +6,8 @@
  */
 
 // 1. Intercept the request to populate the Cart
-add_action('template_redirect', 'saprix_handle_cart_handover');
+// Priority 5 ensures we run BEFORE WooCommerce checks for empty cart (Priority 10)
+add_action('template_redirect', 'saprix_handle_cart_handover', 5);
 
 function saprix_handle_cart_handover()
 {
