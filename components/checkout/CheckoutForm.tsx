@@ -13,6 +13,106 @@ export default function CheckoutForm() {
     const { items, cartTotal, removeItem, updateQuantity } = useCart();
     const [isLoading, setIsLoading] = useState(false);
     const [showCustomerForm, setShowCustomerForm] = useState(false);
+
+    // Updated number as requested
+    const WHATSAPP_NUMBER = "573218737931";
+
+    // Function now accepts data to build the full message
+    const handleWhatsAppCheckout = (data: typeof customerData) => {
+        if (!shippingZone) {
+            toast.error("Por favor selecciona una zona de envío");
+            return;
+        }
+
+        // 1. Calculate Shipping Cost (Mirroring PHP Logic)
+        const totalQty = items.reduce((acc, item) => acc + item.quantity, 0);
+        let calculatedShipping = 0;
+
+        // Formula: floor((qty - 1) / 2) -> 1-2=0, 3-4=1, 5-6=2
+        const incrementFactor = Math.floor((totalQty - 1) / 2);
+        const incrementPrice = 5000;
+
+        if (shippingZone === 'bogota') {
+            calculatedShipping = 10000 + (incrementFactor * incrementPrice);
+        } else if (shippingZone === 'cercanos') { // Alrededores
+            calculatedShipping = 15000 + (incrementFactor * incrementPrice);
+        } else if (shippingZone === 'nacional') {
+            calculatedShipping = 25000 + (incrementFactor * incrementPrice);
+        } else if (shippingZone === 'recoger') {
+            calculatedShipping = 0;
+        }
+
+        // 2. Build Message with Customer Data
+        const finalTotal = cartTotal + calculatedShipping;
+        let message = `*¡Hola! Quiero finalizar mi compra en Saprix.*\n\n`;
+        message += `*PEDIDO:*\n`;
+
+        items.forEach(item => {
+            const variantInfo = item.selectedVariant ? ` - ${item.selectedVariant.attributes.join(' / ')}` : '';
+            message += `• (${item.quantity}) ${item.name}${variantInfo}\n`;
+        });
+
+        message += `\n*ENVÍO:* ${shippingZone.toUpperCase()} ($${calculatedShipping.toLocaleString('es-CO')})\n`;
+        message += `*TOTAL A PAGAR:* $${finalTotal.toLocaleString('es-CO')}\n\n`;
+
+        message += `📋 *DATOS DEL CLIENTE:*\n`;
+        message += `Nombre: ${data.firstName} ${data.lastName}\n`;
+        message += `Documento: ${data.documentId}\n`;
+        message += `Teléfono: ${data.phone}\n`;
+        message += `Email: ${data.email}\n`;
+        message += `Dirección: ${data.address} ${data.apartment ? `(${data.apartment})` : ''}\n`;
+        message += `Ciudad/Depto: ${data.city}, ${data.state}\n\n`;
+
+        message += `🔗 *Link de pago seguro (Wompi):*\nhttps://checkout.wompi.co/l/VPOS_TdPgzp\n\n`;
+        message += `Quedo atento al despacho. Gracias.`;
+
+        // 3. Open WhatsApp
+        const encodedMessage = encodeURIComponent(message);
+        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`, '_blank');
+    };
+
+    const handleWompiCheckout = () => {
+        if (!shippingZone) {
+            toast.error("Por favor selecciona una zona de envío");
+            return;
+        }
+
+        setIsLoading(true);
+
+        try {
+            // --- CART HANDOVER LOGIC (WOMPI/DEFAULT) ---
+            // Construimos la URL para 'entregar' el carrito a WooCommerce
+            const baseUrl = "https://pagos.saprix.com.co/finalizar-compra/";
+
+            // 1. Construir string de items: ID:QTY,ID:QTY
+            const itemsString = items.map(item => {
+                const idToUse = item.variationId || item.id;
+                return `${idToUse}:${item.quantity}`;
+            }).join(',');
+
+            // 2. Mapear parámetros básicos (sin datos de cliente, ya que se pedirán en WooCommerce)
+            const params = new URLSearchParams();
+            params.append('saprix_handover', 'true');
+            params.append('items', itemsString);
+            params.append('shipping_zone', shippingZone);
+
+            // Redirección
+            const handoverUrl = `${baseUrl}?${params.toString()}`;
+            console.log("🚀 Redirecting to Handover:", handoverUrl);
+
+            toast.success("Redirigiendo a pasarela de pagos segura...");
+
+            // Pequeño delay para que el usuario vea el toast
+            setTimeout(() => {
+                window.location.href = handoverUrl;
+            }, 1000);
+
+        } catch (error: any) {
+            console.error('Error:', error);
+            toast.error('Hubo un error al procesar la solicitud.');
+            setIsLoading(false);
+        }
+    };
     const [recommendedProducts, setRecommendedProducts] = useState<any[]>([]);
     const [customerData, setCustomerData] = useState({
         firstName: '',
@@ -46,7 +146,7 @@ export default function CheckoutForm() {
     const [shippingZone, setShippingZone] = useState(''); // Default: empty to force selection
 
     // Payment Method State
-    const [paymentMethod, setPaymentMethod] = useState<'wompi' | 'addi'>('wompi');
+    const [paymentMethod, setPaymentMethod] = useState<'wompi' | 'addi' | 'whatsapp'>('wompi');
 
     const totalQuantity = items.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -159,55 +259,61 @@ export default function CheckoutForm() {
                 return;
             }
 
-            // --- INTEGRACIÓN DIRECTA API ADDI ---
-            // Enviamos los datos al backend para crear la orden y obtener el link de Addi
-
-            const response = await fetch('/api/checkout/process-payment', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    cartItems: items,
-                    customer: {
-                        ...customerData,
-                        shippingZone // Enviamos la zona para costo de envío
-                    },
-                    billing: sameAsShipping ? undefined : billingAddress,
-                    cartTotal: finalTotal,
-                    shippingCost: shippingCost,
-                    paymentMethod: paymentMethod // <-- ENVIAMOS EL MÉTODO SELECCIONADO
-                }),
-            });
-
-            const responseText = await response.text();
-            console.log("📥 [CheckoutForm] Respuesta Raw:", responseText);
-            console.log("📥 [CheckoutForm] Status:", response.status);
-
-            let data;
-            try {
-                data = JSON.parse(responseText);
-            } catch (e) {
-                console.error("❌ ERROR CRÍTICO: El servidor no devolvió JSON.", responseText);
-                toast.error(`Error del servidor (No es JSON): ${responseText.substring(0, 50)}...`);
+            // --- WHATSAPP FLOW ---
+            if (paymentMethod === 'whatsapp') {
+                handleWhatsAppCheckout(customerData);
                 setIsLoading(false);
                 return;
             }
 
-            if (data.success && data.permalink) {
-                toast.success('Redirigiendo a Addi para finalizar el pago...');
-                window.location.href = data.permalink;
-            } else {
-                console.error('Error en checkout (Data parsed):', data);
-                // Si data está vacío o es {}, mostramos el raw text para depurar
-                const errorMessage = data.error || (Object.keys(data).length === 0 ? `Respuesta vacía del servidor: ${responseText.substring(0, 100)}` : 'Hubo un error al procesar tu solicitud.');
-                toast.error(errorMessage);
-                setIsLoading(false);
+            // --- CART HANDOVER LOGIC (WOMPI/DEFAULT) ---
+            // Construimos la URL para 'entregar' el carrito a WooCommerce
+            const baseUrl = "https://pagos.saprix.com.co/finalizar-compra/";
+
+            // 1. Construir string de items: ID:QTY,ID:QTY
+            // Si tiene variationId, usamos ese preferiblemente (WooCommerce maneja IDs de variación directamente en add_to_cart usualmente)
+            const itemsString = items.map(item => {
+                const idToUse = item.variationId || item.id;
+                return `${idToUse}:${item.quantity}`;
+            }).join(',');
+
+            // 2. Mapear datos del cliente a params de URL de WooCommerce
+            const params = new URLSearchParams();
+            params.append('saprix_handover', 'true');
+            params.append('items', itemsString);
+            if (shippingZone) {
+                params.append('shipping_zone', shippingZone);
             }
+
+            // Billing / Customer Fields
+            params.append('billing_first_name', customerData.firstName);
+            params.append('billing_last_name', customerData.lastName);
+            params.append('billing_email', customerData.email);
+            params.append('billing_phone', customerData.phone);
+            params.append('billing_address_1', customerData.address);
+            params.append('billing_address_2', customerData.apartment || '');
+            params.append('billing_city', customerData.city);
+            params.append('billing_state', customerData.state);
+            params.append('billing_postcode', customerData.postcode || '');
+            params.append('billing_country', 'CO'); // Default
+
+            // Cedula (Mapeada en el snippet PHP a billing_cedula / billing_dni)
+            params.append('documentId', customerData.documentId);
+
+            // Redirección
+            const handoverUrl = `${baseUrl}?${params.toString()}`;
+            console.log("🚀 Redirecting to Handover:", handoverUrl);
+
+            toast.success("Redirigiendo a pasarela de pagos segura...");
+
+            // Pequeño delay para que el usuario vea el toast
+            setTimeout(() => {
+                window.location.href = handoverUrl;
+            }, 1000);
 
         } catch (error: any) {
             console.error('Error:', error);
-            toast.error('Error de conexión con el servidor.');
+            toast.error('Hubo un error al procesar la solicitud.');
             setIsLoading(false);
         }
     };
@@ -457,15 +563,63 @@ export default function CheckoutForm() {
                                     </div>
                                 </div>
 
+
+                                {/* Banners de Pago */}
+                                {/* Banners de Pago */}
+                                <div className="grid grid-cols-2 gap-4 items-center mb-8 pt-4 border-t border-gray-100">
+                                    <div className="flex justify-center border-r border-gray-100">
+                                        <Image
+                                            src="/Pagos-seguros-Wompi-Horizontal.png"
+                                            alt="Pagos Seguros Wompi"
+                                            width={150}
+                                            height={40}
+                                            className="object-contain"
+                                        />
+                                    </div>
+                                    <div className="flex flex-col items-center gap-1">
+                                        <Image
+                                            src="/Pagos con Addi.webp"
+                                            alt="Pagos Seguros Addi"
+                                            width={150}
+                                            height={40}
+                                            className="object-contain"
+                                        />
+                                        <p className="text-[10px] font-medium text-gray-500 text-center leading-tight">
+                                            Puedes pagar también con <strong>Addi</strong>
+                                        </p>
+                                    </div>
+                                </div>
+
                                 {/* Botón Continuar (Va al Formulario) */}
-                                <button
-                                    type="button"
-                                    onClick={() => setShowCustomerForm(true)}
-                                    className="w-full py-4 bg-black text-white font-bold uppercase tracking-widest hover:bg-gray-800 transition-all duration-300 flex items-center justify-center gap-3 group"
-                                >
-                                    <span>CONTINUAR COMPRA</span>
-                                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                                </button>
+                                {/* Botones de Acción (Direct Cart Handover) */}
+                                <div className="space-y-4">
+                                    <button
+                                        type="button"
+                                        disabled={!shippingZone}
+                                        onClick={() => {
+                                            if (!shippingZone) return;
+                                            handleWompiCheckout();
+                                        }}
+                                        className="w-full py-4 bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-gray-800 transition-all duration-300 flex items-center justify-center gap-3 group shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-black"
+                                    >
+                                        <span>Pagar ahora: Nequi, Bancolombia, PSE</span>
+                                    </button>
+
+                                    {/* WhatsApp Button (Active) */}
+                                    <button
+                                        type="button"
+                                        disabled={!shippingZone}
+                                        onClick={() => {
+                                            if (!shippingZone) return;
+                                            setPaymentMethod('whatsapp');
+                                            setShowCustomerForm(true);
+                                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        }}
+                                        className="w-full py-4 bg-[#25D366] text-white text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-3 shadow-md hover:bg-[#20bd5a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#25D366]"
+                                    >
+                                        <span>Pagar ahora por WhatsApp</span>
+                                    </button>
+                                </div>
 
                                 <div className="mt-6 flex items-center justify-center gap-2 text-[10px] text-gray-500 uppercase font-medium tracking-wide">
                                     <ShieldCheck size={14} />
@@ -474,8 +628,8 @@ export default function CheckoutForm() {
                             </motion.div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </div >
+            </div >
         );
     }
 
@@ -580,13 +734,14 @@ export default function CheckoutForm() {
 
                                 <div className="space-y-2">
                                     <label className="block text-xs font-bold uppercase text-gray-700">
-                                        Cédula / NIT
+                                        Cédula / NIT *
                                     </label>
                                     <input
                                         type="text"
                                         name="documentId"
                                         value={customerData.documentId}
                                         onChange={handleInputChange}
+                                        required
                                         className="w-full px-4 py-3 bg-gray-50 border-b-2 border-gray-200 focus:border-black outline-none transition-colors placeholder:text-gray-400"
                                         placeholder="Número de documento"
                                     />
@@ -631,6 +786,7 @@ export default function CheckoutForm() {
                                             name="city"
                                             value={customerData.city}
                                             onChange={handleInputChange}
+                                            required
                                             className="w-full px-4 py-3 bg-gray-50 border-b-2 border-gray-200 focus:border-black outline-none transition-colors placeholder:text-gray-400"
                                             placeholder="Ciudad"
                                         />
@@ -644,6 +800,7 @@ export default function CheckoutForm() {
                                             name="state"
                                             value={customerData.state}
                                             onChange={handleInputChange}
+                                            required
                                             className="w-full px-4 py-3 bg-gray-50 border-b-2 border-gray-200 focus:border-black outline-none transition-colors placeholder:text-gray-400"
                                             placeholder="Departamento"
                                         />
@@ -902,54 +1059,17 @@ export default function CheckoutForm() {
                                 </label>
                             </div>
 
-                            {/* Selector de Método de Pago (Ahora está AQUÍ en el paso final) */}
-                            <div className="space-y-3 pt-4 border-t border-gray-100 mb-6">
-                                <label className="block text-xs font-bold uppercase text-black">
-                                    Método de Pago
-                                </label>
-                                <div className="grid grid-cols-1 gap-3">
-                                    {/* Opción Wompi */}
-                                    <label className={`relative flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all ${paymentMethod === 'wompi' ? 'border-black bg-gray-50' : 'border-gray-200 hover:border-gray-300'}`}>
-                                        <input
-                                            type="radio"
-                                            name="paymentMethodCheckout"
-                                            value="wompi"
-                                            checked={paymentMethod === 'wompi'}
-                                            onChange={() => setPaymentMethod('wompi')}
-                                            className="w-4 h-4 text-black focus:ring-black border-gray-300"
-                                        />
-                                        <div className="ml-3">
-                                            <span className="block text-sm font-bold text-black uppercase">Wompi (Tarjetas / PSE)</span>
-                                            <span className="block text-xs text-gray-500">Paga con crédito, débito o transferencia.</span>
-                                        </div>
-                                    </label>
-
-                                    {/* Opción Addi */}
-                                    <label className={`relative flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all ${paymentMethod === 'addi' ? 'border-[#00E5FF] bg-cyan-50' : 'border-gray-200 hover:border-cyan-200'}`}>
-                                        <input
-                                            type="radio"
-                                            name="paymentMethodCheckout"
-                                            value="addi"
-                                            checked={paymentMethod === 'addi'}
-                                            onChange={() => setPaymentMethod('addi')}
-                                            className="w-4 h-4 text-[#00E5FF] focus:ring-[#00E5FF] border-gray-300"
-                                        />
-                                        <div className="ml-3">
-                                            <span className="block text-sm font-bold text-black uppercase">ADDI (Crédito)</span>
-                                            <span className="block text-xs text-gray-500">Paga a cuotas sin tarjeta.</span>
-                                        </div>
-                                        <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                                            <span className="text-[10px] font-black bg-[#00E5FF] text-black px-2 py-1 rounded">ADDI</span>
-                                        </div>
-                                    </label>
-                                </div>
+                            {/* Nota sobre redirección */}
+                            <div className="mb-6 p-4 bg-blue-50 border-l-4 border-blue-500 text-sm text-blue-800">
+                                <p className="font-bold">Siguiente paso:</p>
+                                <p>Serás redirigido a nuestra pasarela de pagos segura para completar tu compra con <strong>Addi, Wompi o Transferencia</strong>.</p>
                             </div>
 
                             <button
                                 type="submit"
                                 form="checkout-form"
                                 disabled={isLoading}
-                                className="w-full py-4 bg-black hover:bg-gray-800 text-white font-bold uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed group"
+                                className={`w-full py-4 ${paymentMethod === 'whatsapp' ? 'bg-[#25D366] hover:bg-[#20bd5a]' : 'bg-black hover:bg-gray-800'} text-white font-bold uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed group shadow-lg`}
                             >
                                 {isLoading ? (
                                     <>
@@ -958,11 +1078,32 @@ export default function CheckoutForm() {
                                     </>
                                 ) : (
                                     <>
-                                        <span>Procesar Pago con {paymentMethod === 'wompi' ? 'Wompi' : 'Addi'}</span>
-                                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                        {paymentMethod === 'whatsapp' ? (
+                                            <>
+                                                <span>Finalizar Pedido en WhatsApp</span>
+                                                <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.008-.57-.008-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.372 2.905 5.521 7.189 7.111.409.136.73.238 1.002.324.77.243 1.426.243 1.945.149.574-.104 1.758-.718 2.006-1.411.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+                                                </svg>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <span>Continuar al Pago Seguro</span>
+                                                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                            </>
+                                        )}
                                     </>
                                 )}
                             </button>
+
+                            {/* Payment Method Info Message */}
+                            {paymentMethod === 'whatsapp' && (
+                                <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded text-sm text-green-800 text-center">
+                                    <p className="font-medium">Estás eligiendo pagar vía WhatsApp.</p>
+                                    <p className="text-xs mt-1">Al hacer clic, se abrirá un chat con nuestro equipo para finalizar tu compra.</p>
+                                </div>
+                            )}
+
+                            {/* "Próximamente" button removed as functionality is active via top button flow */}
 
                             <div className="mt-6 flex items-center justify-center gap-2 text-[10px] text-gray-500 uppercase font-medium tracking-wide">
                                 <CreditCard size={14} />
