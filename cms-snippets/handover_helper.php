@@ -34,7 +34,7 @@ function saprix_handle_cart_handover()
                 $quantity = intval($parts[1]);
 
                 if ($product_id > 0 && $quantity > 0) {
-                     // Verificación robusta: ¿Es producto simple o variación?
+                    // Verificación robusta: ¿Es producto simple o variación?
                     $product = wc_get_product($product_id);
 
                     if ($product) {
@@ -51,8 +51,9 @@ function saprix_handle_cart_handover()
             }
         }
 
-    // Note: We don't redirect here, we let the page continue to load the Checkout
-    // The query params remain in the URL so step 2 can read them.
+        // Note: We don't redirect here, we let the page continue to load the Checkout
+        // The query params remain in the URL so step 2 can read them.
+    }
 }
 
 // 2. Pre-fill Checkout Fields from URL parameters
@@ -99,7 +100,7 @@ function saprix_custom_shipping_cost($rates, $package)
 {
     // Contar total de items en el carrito
     $total_qty = WC()->cart->get_cart_contents_count();
-    
+
     // Incremento por cada 2 items adicionales
     // 1-2 items: 0 incrementos
     // 3-4 items: 1 incremento
@@ -107,20 +108,20 @@ function saprix_custom_shipping_cost($rates, $package)
     $increment_factor = floor(($total_qty - 1) / 2);
 
     foreach ($rates as $rate_key => $rate) {
-        
+
         // Lógica para NACIONAL / RESTO DEL PAÍS
         if (stripos($rate->label, 'Nacional') !== false || stripos($rate->label, 'Resto') !== false || stripos($rate->label, 'País') !== false) {
-            
+
             // Costo Base: 25.000 | Incremento: 5.000
             $base_cost = 25000;
             $increment_cost = 5000;
-            
+
             // Cálculo
             $new_cost = $base_cost + ($increment_factor * $increment_cost);
-            
+
             // Aplicar costo
             $rates[$rate_key]->cost = $new_cost;
-            
+
             // Asegurar que los impuestos se recalculen si los hay (aunque normalmente no hay IVA en envío)
             // $rates[$rate_key]->taxes = ...; 
         }
@@ -128,21 +129,21 @@ function saprix_custom_shipping_cost($rates, $package)
         // Lógica para ALREDEDORES (Si quieres que aplique igual)
         // Asumimos Base 15.000 e incremento 5.000 (puedes ajustar)
         elseif (stripos($rate->label, 'Alrededores') !== false) {
-             $base_cost = 15000;
-             $increment_cost = 5000;
-             
-             $new_cost = $base_cost + ($increment_factor * $increment_cost);
-             $rates[$rate_key]->cost = $new_cost;
+            $base_cost = 15000;
+            $increment_cost = 5000;
+
+            $new_cost = $base_cost + ($increment_factor * $increment_cost);
+            $rates[$rate_key]->cost = $new_cost;
         }
 
         // Lógica para BOGOTÁ
         // Base 10.000 + Incremento 5.000
         elseif (stripos($rate->label, 'Bogotá') !== false) {
-             $base_cost = 10000;
-             $increment_cost = 5000;
-             
-             $new_cost = $base_cost + ($increment_factor * $increment_cost);
-             $rates[$rate_key]->cost = $new_cost;
+            $base_cost = 10000;
+            $increment_cost = 5000;
+
+            $new_cost = $base_cost + ($increment_factor * $increment_cost);
+            $rates[$rate_key]->cost = $new_cost;
         }
     }
 
