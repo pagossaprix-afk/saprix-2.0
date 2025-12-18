@@ -65,15 +65,13 @@ export default function ProductCard({ id, name, price, imageUrl, slug, category,
       setIsLoadingVariations(true);
       setIsQuickAddOpen(true);
 
-      // Fetch variations data
+      // Fetch variations data from API
       try {
-        const [colorOptions, sizeOptions, variations] = await Promise.all([
-          getColorOptionsFromVariations(id),
-          getSizeOptionsFromVariations(id),
-          getProductVariations(id)
-        ]);
+        const response = await fetch(`/api/product-variations?productId=${id}`);
+        if (!response.ok) throw new Error('Failed to fetch variations');
 
-        setVariationsData({ colorOptions, sizeOptions, variations });
+        const data = await response.json();
+        setVariationsData(data);
       } catch (error) {
         console.error('Error loading variations:', error);
       } finally {
