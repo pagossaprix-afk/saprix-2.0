@@ -115,25 +115,39 @@ export default function ProductCard({ id, name, price, imageUrl, slug, category,
               sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
               className="object-cover transition-all duration-300"
             />
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                toggleWishlist({ id, name, price: numericPrice, image: mainImage, slug, category });
-              }}
-              className="absolute top-2 right-2 p-1.5 bg-white hover:bg-gray-100 rounded-full shadow-sm z-10 transition-transform hover:scale-110"
-              title={isInWishlist(id) ? "Eliminar de favoritos" : "Agregar a favoritos"}
-            >
-              {isInWishlist(id) ? (
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-red-500">
-                  <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
-                </svg>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-gray-900">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-                </svg>
-              )}
-            </button>
+
+            {/* Action Buttons - Always Visible */}
+            <div className="absolute top-2 right-2 flex gap-2 z-10">
+              {/* Add to Cart Button */}
+              <button
+                onClick={handleAddToCart}
+                className="p-1.5 bg-white hover:bg-gray-100 rounded-full shadow-sm transition-transform hover:scale-110"
+                title="Agregar al carrito"
+              >
+                <ShoppingCart className="w-5 h-5 text-gray-900" />
+              </button>
+
+              {/* Wishlist Button */}
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  toggleWishlist({ id, name, price: numericPrice, image: mainImage, slug, category });
+                }}
+                className="p-1.5 bg-white hover:bg-gray-100 rounded-full shadow-sm transition-transform hover:scale-110"
+                title={isInWishlist(id) ? "Eliminar de favoritos" : "Agregar a favoritos"}
+              >
+                {isInWishlist(id) ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-red-500">
+                    <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-gray-900">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                  </svg>
+                )}
+              </button>
+            </div>
           </div>
 
           {/* Contenido de la Tarjeta */}
@@ -179,17 +193,6 @@ export default function ProductCard({ id, name, price, imageUrl, slug, category,
             <p className="text-gray-500 text-xs font-medium uppercase tracking-wide">
               {subcategory || category || 'Fútbol Sala'}
             </p>
-
-            {/* Add to Cart Button - Appears on hover */}
-            <div className={`transition-all duration-300 overflow-hidden ${isHovered ? 'max-h-12 opacity-100 mt-3' : 'max-h-0 opacity-0 mt-0'}`}>
-              <button
-                onClick={handleAddToCart}
-                className="w-full bg-black text-white py-2 px-4 text-xs font-bold uppercase tracking-wider hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
-              >
-                <ShoppingCart className="w-4 h-4" />
-                <span>Agregar al carrito</span>
-              </button>
-            </div>
           </div>
         </div>
       </Link>
