@@ -8,7 +8,6 @@ import { ShoppingCart } from 'lucide-react';
 import { MouseEvent, useState, useEffect } from 'react';
 import { ensureHttps } from '@/lib/utils';
 import QuickAddModal from './QuickAddModal';
-import { getColorOptionsFromVariations, getSizeOptionsFromVariations, getProductVariations } from '@/lib/woocommerce';
 
 interface ProductCardProps {
   id: number;
