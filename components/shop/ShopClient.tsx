@@ -328,6 +328,7 @@ export function ShopClient({ initialProducts, categories }: ShopClientProps) {
                                         slug={product.slug}
                                         category={product.categories?.[0]?.slug}
                                         images={product.images?.map(img => img.src) || []}
+                                        type={product.type || 'simple'}
                                     />
                                 </div>
                             ))}
