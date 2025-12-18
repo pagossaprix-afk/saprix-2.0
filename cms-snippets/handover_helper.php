@@ -1,8 +1,7 @@
 <?php
 /**
- * Title: Saprix Headless Handover Helper - FIXED VERSION
+ * Title: Saprix Headless Handover Helper
  * Description: Allows populating the WooCommerce Cart and Checkout fields via URL parameters for a seamless Headless -> WordPress transition.
- * Handles both simple products and variable products correctly.
  */
 
 // 1. Intercept the request to populate the Cart
@@ -37,47 +36,40 @@ function saprix_handle_cart_handover()
                 $product = wc_get_product($product_id);
 
                 if ($product) {
-                    // Check if it's a variable product (parent)
-                    if ($product->is_type('variable')) {
-                        // It's a variable product - we need to add a specific variation
-                        // Get the first available variation
+                    // Check product type
+                    if ($product->is_type('variation')) {
+                        // It's a variation ID - add it with parent
+                        $parent_id = $product->get_parent_id();
+                        WC()->cart->add_to_cart($parent_id, $quantity, $product_id);
+                    } elseif ($product->is_type('variable')) {
+                        // It's a variable product parent
+                        // Get first available variation with stock
                         $variations = $product->get_available_variations();
 
                         if (!empty($variations)) {
-                            $first_variation = $variations[0];
-                            $variation_id = $first_variation['variation_id'];
-                            $parent_id = $product_id;
-
-                            // Add the variation to cart
-                            $cart_item_key = WC()->cart->add_to_cart($parent_id, $quantity, $variation_id);
-
-                            if (!$cart_item_key) {
-                                error_log('SAPRIX ERROR: Failed to add variation ' . $variation_id . ' of product ' . $parent_id);
+                            // Find first variation with stock
+                            $variation_to_add = null;
+                            foreach ($variations as $var) {
+                                $var_product = wc_get_product($var['variation_id']);
+                                if ($var_product && $var_product->is_in_stock()) {
+                                    $variation_to_add = $var['variation_id'];
+                                    break;
+                                }
                             }
-                        } else {
-                            error_log('SAPRIX ERROR: Variable product ' . $product_id . ' has no available variations');
-                        }
-                    }
-                    // Check if it's a variation (child)
-                    elseif ($product->is_type('variation')) {
-                        // It's already a variation - add it with parent ID
-                        $parent_id = $product->get_parent_id();
-                        $cart_item_key = WC()->cart->add_to_cart($parent_id, $quantity, $product_id);
 
-                        if (!$cart_item_key) {
-                            error_log('SAPRIX ERROR: Failed to add variation ' . $product_id . ' with parent ' . $parent_id);
-                        }
-                    }
-                    // It's a simple product
-                    else {
-                        $cart_item_key = WC()->cart->add_to_cart($product_id, $quantity);
+                            // If no variation with stock, use first one anyway
+                            if (!$variation_to_add && !empty($variations)) {
+                                $variation_to_add = $variations[0]['variation_id'];
+                            }
 
-                        if (!$cart_item_key) {
-                            error_log('SAPRIX ERROR: Failed to add simple product ' . $product_id);
+                            if ($variation_to_add) {
+                                WC()->cart->add_to_cart($product_id, $quantity, $variation_to_add);
+                            }
                         }
+                    } else {
+                        // It's a simple product
+                        WC()->cart->add_to_cart($product_id, $quantity);
                     }
-                } else {
-                    error_log('SAPRIX ERROR: Product ' . $product_id . ' not found');
                 }
             }
         }
