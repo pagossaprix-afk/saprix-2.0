@@ -100,7 +100,7 @@ export default function QuickAddModal({
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-            <div className="relative w-full max-w-5xl bg-white shadow-2xl overflow-hidden max-h-[90vh]">
+            <div className="relative w-full max-w-5xl bg-white shadow-2xl max-h-[90vh] flex flex-col">
                 {/* Close Button */}
                 <button
                     onClick={onClose}
@@ -109,9 +109,9 @@ export default function QuickAddModal({
                     <X className="w-5 h-5" />
                 </button>
 
-                <div className="grid md:grid-cols-[1.2fr_1fr] gap-0 max-h-[90vh]">
+                <div className="grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-0 overflow-y-auto">
                     {/* Left Side - Image Gallery */}
-                    <div className="bg-gray-50 p-8 overflow-y-auto">
+                    <div className="bg-gray-50 p-4 md:p-8">
                         {/* Main Image */}
                         <div className="relative aspect-square bg-white mb-4 overflow-hidden">
                             <Image
