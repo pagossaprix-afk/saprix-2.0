@@ -4,8 +4,8 @@ import { getProducts, getAllProductCategories } from '@/lib/woocommerce';
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://saprix.com.co';
 
-    // Sanitize baseUrl: Remove trailing slash and any query parameters
-    baseUrl = baseUrl.replace(/\/$/, '').split('?')[0];
+    // Sanitize baseUrl: Remove ALL trailing slashes and any query parameters
+    baseUrl = baseUrl.replace(/\/+$/, '').split('?')[0].trim();
 
     // 1. Static Routes
     const staticRoutes = [

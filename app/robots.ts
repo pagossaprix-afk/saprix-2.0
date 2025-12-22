@@ -1,7 +1,10 @@
 import { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://saprix.com.co';
+    let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://saprix.com.co';
+
+    // Sanitize baseUrl: Remove ALL trailing slashes and any query parameters
+    baseUrl = baseUrl.replace(/\/+$/, '').split('?')[0].trim();
 
     return {
         rules: {
