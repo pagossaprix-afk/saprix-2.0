@@ -41,9 +41,11 @@ export default function CheckoutForm() {
         } else if (shippingZone === 'cercanos') { // Alrededores
             calculatedShipping = 15000 + (incrementFactor * incrementPrice);
             shippingLabel = `Alrededores a Bogotá: $15.000`;
-        } else if (shippingZone === 'nacional') {
+        } else if (shippingZone === 'nacional' || shippingZone === 'costa_atlantica') {
             calculatedShipping = 25000 + (incrementFactor * incrementPrice);
-            shippingLabel = `Nacional: $25.000`;
+            shippingLabel = shippingZone === 'costa_atlantica'
+                ? `Costa Atlántica: $25.000 (Requiere Abono)`
+                : `Nacional: $25.000`;
         } else if (shippingZone === 'recoger') {
             calculatedShipping = 0;
             shippingLabel = `Recoger en Tienda: Gratis`;
@@ -66,6 +68,9 @@ export default function CheckoutForm() {
         });
 
         message += `\n*ENVÍO:* ${shippingLabel}\n`;
+        if (shippingZone === 'costa_atlantica') {
+            message += `*CONDICIÓN DE ENVÍO:* ABONO DE $20.000 (Nequi) + Saldo Contraentrega\n`;
+        }
         message += `*TOTAL A PAGAR:* $${finalTotal.toLocaleString('es-CO')}\n\n`;
 
         message += `📋 *DATOS DEL CLIENTE:*\n`;
@@ -76,7 +81,11 @@ export default function CheckoutForm() {
         message += `Dirección: ${data.address} ${data.apartment ? `(${data.apartment})` : ''}\n`;
         message += `Ciudad/Depto: ${data.city}, ${data.state}\n\n`;
 
-        message += `*Quedo atento para proceder con el pago me pueden informar porque medio?*`;
+        if (shippingZone === 'costa_atlantica') {
+            message += `*Quedo atento para realizar el abono de $20.000 a Nequi y finalizar mi pedido.*`;
+        } else {
+            message += `*Quedo atento para proceder con el pago. ¿Me pueden informar por qué medio?*`;
+        }
 
         // 3. Open WhatsApp
         const encodedMessage = encodeURIComponent(message);
@@ -178,7 +187,8 @@ export default function CheckoutForm() {
                 recoger: 0,
                 bogota: 10000,
                 cercanos: 15000,
-                nacional: 25000
+                nacional: 25000,
+                costa_atlantica: 25000
             };
 
             // Additional cost per kg after 3 kg
@@ -186,7 +196,8 @@ export default function CheckoutForm() {
                 recoger: 0,
                 bogota: 3000,
                 cercanos: 3000,
-                nacional: 8000
+                nacional: 8000,
+                costa_atlantica: 8000
             };
 
             let cost = baseRates[shippingZone as keyof typeof baseRates] ?? baseRates.nacional;
@@ -496,7 +507,8 @@ export default function CheckoutForm() {
                                                 <option value="recoger">Recoger en Tienda - Gratis</option>
                                                 <option value="bogota">Bogotá D.C. - Desde $10.000</option>
                                                 <option value="cercanos">Alrededores a Bogotá - Desde $15.000</option>
-                                                <option value="nacional">Nacional - Desde $25.000</option>
+                                                <option value="nacional">Nacional (Excepto Costa) - Desde $25.000</option>
+                                                <option value="costa_atlantica">Costa Atlántica ($25.000) - Requiere Abono</option>
                                             </select>
                                             <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
                                                 <Truck size={16} />
@@ -508,6 +520,20 @@ export default function CheckoutForm() {
                                             <p className="text-[10px] text-gray-500 leading-tight bg-gray-50 p-2 border-l-2 border-black">
                                                 Incluye: Cajicá, Chía, Funza, Facatativá, La Calera, Mosquera
                                             </p>
+                                        )}
+
+                                        {shippingZone === 'costa_atlantica' && (
+                                            <div className="bg-blue-50 p-2 border-l-2 border-blue-600 space-y-1">
+                                                <p className="text-[10px] font-bold text-blue-900 leading-tight uppercase">
+                                                    CONDICIÓN DE ENVÍO: ADELANTO DE $20.000
+                                                </p>
+                                                <p className="text-[10px] text-blue-800 leading-tight">
+                                                    El envío vale <strong>$25.000</strong>. Para despachar con <strong>Pago Contraentrega</strong>, debes abonar <strong>$20.000</strong> por Nequi anticipadamente.
+                                                </p>
+                                                <p className="text-[10px] text-gray-500 leading-tight pt-1 border-t border-blue-200">
+                                                    <strong>Incluye:</strong> Atlántico, Magdalena, Guajira, Bolívar.
+                                                </p>
+                                            </div>
                                         )}
 
                                         {shippingZone && shippingZone !== 'recoger' && (
@@ -534,8 +560,9 @@ export default function CheckoutForm() {
                                         <span className="text-gray-600 uppercase font-medium">
                                             Envío {shippingZone === 'bogota' ? ': Bogotá D.C.' :
                                                 shippingZone === 'cercanos' ? ': Alrededores a Bogotá' :
-                                                    shippingZone === 'nacional' ? ': Nacional' :
-                                                        shippingZone === 'recoger' ? ': Recoger en Tienda' : ''}
+                                                    shippingZone === 'costa_atlantica' ? ': Costa Atlántica' :
+                                                        shippingZone === 'nacional' ? ': Nacional' :
+                                                            shippingZone === 'recoger' ? ': Recoger en Tienda' : ''}
                                         </span>
                                         <div className="text-right">
                                             {shippingMessage === "Envío Gratis" ? (
@@ -562,7 +589,7 @@ export default function CheckoutForm() {
                                             <span className="text-lg font-black uppercase italic text-black">Total</span>
 
                                             <span className="text-2xl font-black text-black">
-                                                ${cartTotal.toLocaleString('es-CO', { maximumFractionDigits: 0 })}
+                                                ${finalTotal.toLocaleString('es-CO', { maximumFractionDigits: 0 })}
                                             </span>
                                         </div>
                                         <p className="text-[10px] text-gray-500 mt-1 text-right">(IVA incluido)</p>
@@ -599,18 +626,26 @@ export default function CheckoutForm() {
                                 {/* Botón Continuar (Va al Formulario) */}
                                 {/* Botones de Acción (Direct Cart Handover) */}
                                 <div className="space-y-4">
-                                    <button
-                                        type="button"
-                                        id="btn-pay-now-wompi"
-                                        disabled={!shippingZone}
-                                        onClick={() => {
-                                            if (!shippingZone) return;
-                                            handleWompiCheckout();
-                                        }}
-                                        className="w-full py-4 bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-gray-800 transition-all duration-300 flex items-center justify-center gap-3 group shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-black"
-                                    >
-                                        <span>Pagar ahora: Nequi, Tarjetas, PSE o Addi</span>
-                                    </button>
+                                    {/* Wompi Button - Hidden for Costa Atlántica */}
+                                    {shippingZone !== 'costa_atlantica' ? (
+                                        <button
+                                            type="button"
+                                            id="btn-pay-now-wompi"
+                                            disabled={!shippingZone}
+                                            onClick={() => {
+                                                if (!shippingZone) return;
+                                                handleWompiCheckout();
+                                            }}
+                                            className="w-full py-4 bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-gray-800 transition-all duration-300 flex items-center justify-center gap-3 group shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-black"
+                                        >
+                                            <span>Pagar ahora: Nequi, Tarjetas, PSE o Addi</span>
+                                        </button>
+                                    ) : (
+                                        <div className="p-4 bg-orange-50 border border-orange-200 rounded text-sm text-orange-800 text-center">
+                                            <p className="font-bold">⚠️ Para envíos a la Costa Atlántica</p>
+                                            <p className="text-xs mt-1">Por motivos de validación de seguridad, los pedidos para tu zona se procesan exclusivamente vía WhatsApp.</p>
+                                        </div>
+                                    )}
 
                                     {/* WhatsApp Button (Active) */}
                                     <button
@@ -1005,8 +1040,9 @@ export default function CheckoutForm() {
                                     <span className="text-gray-600 uppercase font-medium">
                                         Envío {shippingZone === 'bogota' ? ': Bogotá D.C.' :
                                             shippingZone === 'cercanos' ? ': Alrededores a Bogotá' :
-                                                shippingZone === 'nacional' ? ': Nacional' :
-                                                    shippingZone === 'recoger' ? ': Recoger en Tienda' : ''}
+                                                shippingZone === 'costa_atlantica' ? ': Costa Atlántica' :
+                                                    shippingZone === 'nacional' ? ': Nacional' :
+                                                        shippingZone === 'recoger' ? ': Recoger en Tienda' : ''}
                                     </span>
                                     <div className="text-right">
                                         {shippingMessage === "Envío Gratis" ? (
