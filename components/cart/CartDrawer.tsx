@@ -27,6 +27,7 @@ export default function CartDrawer() {
                         animate={{ opacity: 0.5 }}
                         exit={{ opacity: 0 }}
                         onClick={toggleCart}
+                        id="cart-drawer-backdrop"
                         className="fixed inset-0 bg-black z-50"
                     />
 
@@ -46,6 +47,7 @@ export default function CartDrawer() {
                             </h2>
                             <button
                                 onClick={toggleCart}
+                                id="btn-close-cart"
                                 className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
                             >
                                 <X className="w-5 h-5" />
@@ -60,6 +62,7 @@ export default function CartDrawer() {
                                     <p>Tu carrito está vacío</p>
                                     <button
                                         onClick={toggleCart}
+                                        id="btn-cart-continue-shopping"
                                         className="text-lime-500 hover:underline font-medium"
                                     >
                                         Seguir comprando
@@ -98,6 +101,7 @@ export default function CartDrawer() {
                                                         onClick={() =>
                                                             updateQuantity(item.id, item.quantity - 1, item.variationId)
                                                         }
+                                                        id={`btn-decrease-qty-${item.id}`}
                                                         disabled={item.quantity <= 1}
                                                         className="p-0.5 hover:text-lime-500 disabled:opacity-30"
                                                     >
@@ -110,6 +114,7 @@ export default function CartDrawer() {
                                                         onClick={() =>
                                                             updateQuantity(item.id, item.quantity + 1, item.variationId)
                                                         }
+                                                        id={`btn-increase-qty-${item.id}`}
                                                         className="p-0.5 hover:text-lime-500"
                                                     >
                                                         <Plus className="w-3 h-3" />
@@ -121,6 +126,7 @@ export default function CartDrawer() {
                                                     </span>
                                                     <button
                                                         onClick={() => removeItem(item.id, item.variationId)}
+                                                        id={`btn-remove-item-${item.id}`}
                                                         className="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 p-1.5 rounded-full transition-colors"
                                                     >
                                                         <Trash2 className="w-4 h-4" />
@@ -143,6 +149,7 @@ export default function CartDrawer() {
                                 <Link
                                     href="/checkout"
                                     onClick={toggleCart}
+                                    id="btn-proceed-to-checkout"
                                     className="block w-full bg-lime-400 hover:bg-lime-500 text-black font-bold py-3 px-4 rounded-full text-center transition-colors"
                                 >
                                     Proceder al Pago

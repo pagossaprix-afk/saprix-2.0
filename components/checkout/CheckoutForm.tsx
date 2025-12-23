@@ -601,6 +601,7 @@ export default function CheckoutForm() {
                                 <div className="space-y-4">
                                     <button
                                         type="button"
+                                        id="btn-pay-now-wompi"
                                         disabled={!shippingZone}
                                         onClick={() => {
                                             if (!shippingZone) return;
@@ -608,7 +609,7 @@ export default function CheckoutForm() {
                                         }}
                                         className="w-full py-4 bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-gray-800 transition-all duration-300 flex items-center justify-center gap-3 group shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-black"
                                     >
-                                        <span>Pagar ahora: Nequi, Bancolombia, PSE</span>
+                                        <span>Pagar ahora: Nequi, Tarjetas, PSE o Addi</span>
                                     </button>
 
                                     {/* WhatsApp Button (Active) */}
@@ -1079,6 +1080,7 @@ export default function CheckoutForm() {
                             <button
                                 type="submit"
                                 form="checkout-form"
+                                id={paymentMethod === 'whatsapp' ? 'btn-finish-order-whatsapp' : 'btn-finish-order-wompi'}
                                 disabled={isLoading}
                                 className={`w-full py-4 ${paymentMethod === 'whatsapp' ? 'bg-[#25D366] hover:bg-[#20bd5a]' : 'bg-black hover:bg-gray-800'} text-white font-bold uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed group shadow-lg`}
                             >

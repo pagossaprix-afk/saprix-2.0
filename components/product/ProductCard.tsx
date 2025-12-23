@@ -98,6 +98,7 @@ export default function ProductCard({ id, name, price, imageUrl, slug, category,
     <>
       <Link
         href={productUrl}
+        id={`product-card-${slug}`}
         className="group block relative"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => {
@@ -116,11 +117,12 @@ export default function ProductCard({ id, name, price, imageUrl, slug, category,
               className="object-cover transition-all duration-300"
             />
 
-            {/* Action Buttons - Always Visible */}
+            {/* Action Buttons - Always visible */}
             <div className="absolute top-2 right-2 flex gap-2 z-10">
               {/* Add to Cart Button */}
               <button
                 onClick={handleAddToCart}
+                id={`btn-quick-add-${slug}`}
                 className="p-1.5 bg-white hover:bg-gray-100 rounded-full shadow-sm transition-transform hover:scale-110"
                 title="Agregar al carrito"
               >
@@ -134,6 +136,7 @@ export default function ProductCard({ id, name, price, imageUrl, slug, category,
                   e.stopPropagation();
                   toggleWishlist({ id, name, price: numericPrice, image: mainImage, slug, category });
                 }}
+                id={`btn-wishlist-${slug}`}
                 className="p-1.5 bg-white hover:bg-gray-100 rounded-full shadow-sm transition-transform hover:scale-110"
                 title={isInWishlist(id) ? "Eliminar de favoritos" : "Agregar a favoritos"}
               >

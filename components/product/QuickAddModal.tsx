@@ -104,6 +104,7 @@ export default function QuickAddModal({
                 {/* Close Button */}
                 <button
                     onClick={onClose}
+                    id="btn-close-quick-add"
                     className="absolute top-4 right-4 z-10 p-2 bg-blue-600 hover:bg-blue-700 rounded-full transition-colors shadow-lg"
                 >
                     <X className="w-5 h-5 text-white" />
@@ -173,6 +174,7 @@ export default function QuickAddModal({
                                             <button
                                                 key={color.option}
                                                 onClick={() => setSelectedColor(color.option)}
+                                                id={`btn-color-${color.option}`}
                                                 className={`group relative flex items-center gap-2 px-3 py-2 border-2 transition-all ${selectedColor === color.option
                                                     ? 'border-black bg-gray-50'
                                                     : 'border-gray-200 hover:border-gray-400'
@@ -206,6 +208,7 @@ export default function QuickAddModal({
                                             <button
                                                 key={sz.option}
                                                 onClick={() => setSelectedSize(sz.option)}
+                                                id={`btn-size-${sz.option}`}
                                                 disabled={!sz.available}
                                                 className={`h-9 w-full flex items-center justify-center text-xs font-bold border-2 transition-all ${selectedSize === sz.option
                                                     ? 'border-black bg-black text-white'
@@ -235,6 +238,7 @@ export default function QuickAddModal({
                                     <button
                                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
                                         disabled={quantity <= 1}
+                                        id="btn-decrease-qty-modal"
                                         className={`w-9 h-9 flex items-center justify-center transition-colors text-lg ${quantity <= 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'
                                             }`}
                                     >
@@ -246,10 +250,11 @@ export default function QuickAddModal({
                                             const maxStock = variationStock || 999;
                                             setQuantity(Math.min(maxStock, quantity + 1));
                                         }}
+                                        id="btn-increase-qty-modal"
                                         disabled={variationStock !== undefined && quantity >= variationStock}
                                         className={`w-9 h-9 flex items-center justify-center transition-colors text-lg ${(variationStock !== undefined && quantity >= variationStock)
-                                                ? 'opacity-50 cursor-not-allowed'
-                                                : 'hover:bg-gray-100'
+                                            ? 'opacity-50 cursor-not-allowed'
+                                            : 'hover:bg-gray-100'
                                             }`}
                                     >
                                         +
@@ -268,6 +273,7 @@ export default function QuickAddModal({
                             <button
                                 onClick={handleAddToCart}
                                 disabled={isOutOfStock}
+                                id="btn-add-to-cart-modal"
                                 className={`w-full py-3 bg-black text-white text-sm font-bold uppercase tracking-wider hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 ${isOutOfStock ? 'opacity-50 cursor-not-allowed' : ''
                                     }`}
                             >
@@ -277,6 +283,7 @@ export default function QuickAddModal({
 
                             <Link
                                 href={`/${product?.slug}`}
+                                id="link-view-details-modal"
                                 className="block w-full py-2 text-center border border-black text-black text-sm font-bold uppercase tracking-wider hover:bg-gray-50 transition-colors"
                                 onClick={onClose}
                             >

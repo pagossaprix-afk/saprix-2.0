@@ -10,6 +10,7 @@ export default function AddToCartButton({ disabled, onAdd }: AddToCartButtonProp
     <div className="mt-8">
       <button
         type="button"
+        id="btn-add-to-cart-main"
         disabled={disabled}
         onClick={onAdd}
         className={`w-full md:w-auto px-6 py-3 rounded-md font-semibold transition
