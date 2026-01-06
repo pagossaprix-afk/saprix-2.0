@@ -15,7 +15,7 @@ import { WishlistProvider } from "@/context/WishlistContext";
 import CartDrawer from "@/components/cart/CartDrawer";
 import { Toaster } from "sonner";
 import WhatsAppButton from "@/components/ui/WhatsAppButton";
-import HolidayNoticePopup from "@/components/ui/HolidayNoticePopup";
+
 
 const inter = Inter({
   subsets: ["latin"],
@@ -73,7 +73,7 @@ export default function RootLayout({
                 <DixorFooter />
                 <CartDrawer />
                 <WhatsAppButton />
-                <HolidayNoticePopup />
+
               </div>
               <Toaster position="top-right" richColors />
             </WishlistProvider>

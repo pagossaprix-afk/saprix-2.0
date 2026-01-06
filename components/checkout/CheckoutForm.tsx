@@ -176,42 +176,37 @@ export default function CheckoutForm() {
 
     // Calculate Shipping - Works in both cart and checkout views
     useEffect(() => {
-        if (cartTotal > 300000) {
-            setShippingCost(0);
-            setShippingMessage("Envío Gratis");
-        } else {
-            setShippingMessage("");
+        setShippingMessage("");
 
-            // Base rates (up to 3 kg)
-            const baseRates = {
-                recoger: 0,
-                bogota: 10000,
-                cercanos: 15000,
-                nacional: 25000,
-                costa_atlantica: 25000
-            };
+        // Base rates (up to 3 kg)
+        const baseRates = {
+            recoger: 0,
+            bogota: 10000,
+            cercanos: 15000,
+            nacional: 25000,
+            costa_atlantica: 25000
+        };
 
-            // Additional cost per kg after 3 kg
-            const additionalRates = {
-                recoger: 0,
-                bogota: 3000,
-                cercanos: 3000,
-                nacional: 8000,
-                costa_atlantica: 8000
-            };
+        // Additional cost per kg after 3 kg
+        const additionalRates = {
+            recoger: 0,
+            bogota: 3000,
+            cercanos: 3000,
+            nacional: 8000,
+            costa_atlantica: 8000
+        };
 
-            let cost = baseRates[shippingZone as keyof typeof baseRates] ?? baseRates.nacional;
+        let cost = baseRates[shippingZone as keyof typeof baseRates] ?? baseRates.nacional;
 
-            // If weight exceeds 3 kg, add incremental cost
-            if (totalWeight > 3) {
-                const extraWeight = totalWeight - 3;
-                const extraCost = Math.ceil(extraWeight) * (additionalRates[shippingZone as keyof typeof additionalRates] ?? additionalRates.nacional);
-                cost += extraCost;
-                setShippingMessage(`Peso estimado: ${totalWeight.toFixed(1)} kg. Costo puede variar según peso volumétrico.`);
-            }
-
-            setShippingCost(cost);
+        // If weight exceeds 3 kg, add incremental cost
+        if (totalWeight > 3) {
+            const extraWeight = totalWeight - 3;
+            const extraCost = Math.ceil(extraWeight) * (additionalRates[shippingZone as keyof typeof additionalRates] ?? additionalRates.nacional);
+            cost += extraCost;
+            setShippingMessage(`Peso estimado: ${totalWeight.toFixed(1)} kg. Costo puede variar según peso volumétrico.`);
         }
+
+        setShippingCost(cost);
     }, [cartTotal, totalQuantity, shippingZone, totalWeight]);
 
     const finalTotal = cartTotal + shippingCost;
@@ -545,14 +540,7 @@ export default function CheckoutForm() {
                                         )}
 
                                         <div className="text-xs text-gray-500 pt-1">
-                                            {cartTotal > 300000 ? (
-                                                <span className="text-green-700 font-bold flex items-center gap-1">
-                                                    <ShieldCheck size={12} />
-                                                    ENVÍO GRATIS APLICADO
-                                                </span>
-                                            ) : (
-                                                <span>Peso est: {totalWeight.toFixed(1)} kg. Costo final puede variar.</span>
-                                            )}
+                                            <span>Peso est: {totalWeight.toFixed(1)} kg. Costo final puede variar.</span>
                                         </div>
                                     </div>
 
@@ -565,21 +553,15 @@ export default function CheckoutForm() {
                                                             shippingZone === 'recoger' ? ': Recoger en Tienda' : ''}
                                         </span>
                                         <div className="text-right">
-                                            {shippingMessage === "Envío Gratis" ? (
-                                                <span className="font-bold text-green-700 uppercase">Gratis</span>
-                                            ) : (
-                                                <>
-                                                    {shippingCost > 0 && (
-                                                        <span className="font-bold text-black block">
-                                                            ${shippingCost.toLocaleString('es-CO', { maximumFractionDigits: 0 })}
-                                                        </span>
-                                                    )}
-                                                    {shippingMessage && shippingMessage !== "Envío Gratis" && (
-                                                        <span className="text-[10px] text-orange-600 block max-w-[150px] mt-1 leading-tight">
-                                                            {shippingMessage}
-                                                        </span>
-                                                    )}
-                                                </>
+                                            {shippingCost > 0 && (
+                                                <span className="font-bold text-black block">
+                                                    ${shippingCost.toLocaleString('es-CO', { maximumFractionDigits: 0 })}
+                                                </span>
+                                            )}
+                                            {shippingMessage && (
+                                                <span className="text-[10px] text-orange-600 block max-w-[150px] mt-1 leading-tight">
+                                                    {shippingMessage}
+                                                </span>
                                             )}
                                         </div>
                                     </div>
