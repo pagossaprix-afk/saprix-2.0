@@ -44,11 +44,30 @@ export const metadata: Metadata = {
 };
 
 
-export default function RootLayout({
+import { wcFetchRaw } from "@/lib/woocommerce";
+
+import { ChatProvider } from "@/components/context/ChatContext";
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Fetch products for WhatsApp Widget (3 items)
+  let detailedProducts = [];
+  try {
+    const resp = await wcFetchRaw<any[]>("products", { per_page: 3, featured: true, status: "publish" }, 3600);
+    if (resp.data && Array.isArray(resp.data) && resp.data.length > 0) {
+      detailedProducts = resp.data;
+    } else {
+      // Fallback to latest products if no featured ones
+      const fallback = await wcFetchRaw<any[]>("products", { per_page: 3, orderby: "date", order: "desc", status: "publish" }, 3600);
+      detailedProducts = Array.isArray(fallback.data) ? fallback.data : [];
+    }
+  } catch (err) {
+    console.error("Error fetching products for WhatsApp Widget", err);
+  }
+
   return (
     <html lang="es" suppressHydrationWarning>
       {process.env.NEXT_PUBLIC_GTM_ID && (
@@ -64,18 +83,20 @@ export default function RootLayout({
         >
           <CartProvider>
             <WishlistProvider>
-              <div className="flex flex-col min-h-screen">
-                <CustomCursor />
-                <TabNotifier />
-                <HeaderMobileClient />
-                <FutsalHeader />
-                <main className="flex-grow">{children}</main>
-                <DixorFooter />
-                <CartDrawer />
-                <WhatsAppButton />
+              <ChatProvider>
+                <div className="flex flex-col min-h-screen">
+                  <CustomCursor />
+                  <TabNotifier />
+                  <HeaderMobileClient />
+                  <FutsalHeader />
+                  <main className="flex-grow">{children}</main>
+                  <DixorFooter />
+                  <CartDrawer />
+                  <WhatsAppButton products={detailedProducts} />
 
-              </div>
-              <Toaster position="top-right" richColors />
+                </div>
+                <Toaster position="top-right" richColors />
+              </ChatProvider>
             </WishlistProvider>
           </CartProvider>
         </ThemeProvider>

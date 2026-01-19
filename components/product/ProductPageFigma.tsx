@@ -1,12 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Image from "next/image";
 import { Star, Heart, ShoppingCart, Truck, Shield, RotateCcw, Plus, Minus, Ruler, ChevronDown } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
 import SizeGuide from "./SizeGuide";
 import GoogleReviews from "./GoogleReviews";
 import ImageZoomModal from "./ImageZoomModal";
 import { useCart } from "@/context/CartContext";
+import { useChat } from "@/components/context/ChatContext";
 import { ensureHttps } from "@/lib/utils";
 import Link from "next/link";
 
@@ -31,6 +33,21 @@ export default function ProductPageFigma({ mapped, images, colorOptions, sizeOpt
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [isZoomOpen, setIsZoomOpen] = useState(false);
+
+  const { setProductContext, openChat } = useChat();
+
+  // Set product context
+  useEffect(() => {
+    if (mapped) {
+      setProductContext({
+        id: mapped.id,
+        name: mapped.name || slug,
+        price: mapped.price,
+        permalink: mapped.permalink
+      });
+    }
+    return () => setProductContext(null);
+  }, [mapped, slug, setProductContext]);
 
   // Accordion states
   const [openSections, setOpenSections] = useState<string[]>(['description', 'details']);
@@ -289,20 +306,31 @@ export default function ProductPageFigma({ mapped, images, colorOptions, sizeOpt
 
               {/* Actions */}
               <div className="space-y-4 pt-4 border-t border-gray-100">
-                <div className="flex gap-4">
+                <div className="flex flex-col gap-3">
+                  <div className="flex gap-4">
+                    <button
+                      onClick={addToCart}
+                      disabled={isOutOfStock}
+                      className={`flex-1 bg-black text-white h-12 font-bold uppercase tracking-wider flex items-center justify-center gap-3 hover:bg-gray-800 transition-colors ${isOutOfStock ? "opacity-50 cursor-not-allowed" : ""}`}
+                    >
+                      <span>{isOutOfStock ? "Agotado" : "Añadir al carrito"}</span>
+                      {!isOutOfStock && <ShoppingCart className="w-5 h-5" />}
+                    </button>
+                    <button
+                      onClick={toggleWishlist}
+                      className="w-12 h-12 border border-black flex items-center justify-center hover:bg-gray-50 transition-colors"
+                    >
+                      <Heart className={`w-5 h-5 ${isWishlisted ? "fill-black" : ""}`} />
+                    </button>
+                  </div>
+
+                  {/* Botón de WhatsApp Contextual */}
                   <button
-                    onClick={addToCart}
-                    disabled={isOutOfStock}
-                    className={`flex-1 bg-black text-white h-12 font-bold uppercase tracking-wider flex items-center justify-center gap-3 hover:bg-gray-800 transition-colors ${isOutOfStock ? "opacity-50 cursor-not-allowed" : ""}`}
+                    onClick={() => openChat()}
+                    className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white h-12 font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors rounded-sm"
                   >
-                    <span>{isOutOfStock ? "Agotado" : "Añadir al carrito"}</span>
-                    {!isOutOfStock && <ShoppingCart className="w-5 h-5" />}
-                  </button>
-                  <button
-                    onClick={toggleWishlist}
-                    className="w-12 h-12 border border-black flex items-center justify-center hover:bg-gray-50 transition-colors"
-                  >
-                    <Heart className={`w-5 h-5 ${isWishlisted ? "fill-black" : ""}`} />
+                    <FaWhatsapp className="w-5 h-5" />
+                    <span>Consultar disponibilidad</span>
                   </button>
                 </div>
 
