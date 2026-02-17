@@ -635,18 +635,7 @@ export default function FutsalHeader() {
                                   </a>
                                 </div>
 
-                                {/* Envío gratis - Badge elegante */}
-                                <div className="mt-2 p-3 rounded-lg bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-800/50 border border-gray-200 dark:border-gray-700 flex items-center gap-3">
-                                  <div className="p-1.5 bg-white dark:bg-gray-700 rounded-full shadow-sm">
-                                    <Truck className="w-3.5 h-3.5 text-gray-700 dark:text-gray-300" />
-                                  </div>
-                                  <div>
-                                    <h5 className="text-xs font-bold text-gray-900 dark:text-white">Envío Gratis</h5>
-                                    <p className="text-[10px] text-gray-500 dark:text-gray-400">
-                                      Por compras &gt; $150.000
-                                    </p>
-                                  </div>
-                                </div>
+
                               </div>
                             </div>
 
