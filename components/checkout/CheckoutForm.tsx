@@ -16,7 +16,7 @@ export default function CheckoutForm() {
     const [showCustomerForm, setShowCustomerForm] = useState(false);
 
     // Updated number as requested
-    const WHATSAPP_NUMBER = "573023932008";
+    const WHATSAPP_NUMBER = "573019086637";
 
     // Function now accepts data to build the full message
     const handleWhatsAppCheckout = (data: typeof customerData) => {

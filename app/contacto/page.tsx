@@ -17,7 +17,7 @@ export default function ContactoPage() {
               Email: <a href="mailto:hola@saprix.com.co" className="text-saprix-electric-blue hover:underline">hola@saprix.com.co</a>
             </p>
             <p>
-              WhatsApp: <a href="https://wa.me/573001234567" className="text-saprix-electric-blue hover:underline">+57 300 123 4567</a>
+              WhatsApp: <a href="https://wa.me/573019086637" className="text-saprix-electric-blue hover:underline">+57 301 908 6637</a>
             </p>
             <p>
               Instagram: <a href="https://instagram.com/saprix" className="text-saprix-electric-blue hover:underline">@saprix</a>
