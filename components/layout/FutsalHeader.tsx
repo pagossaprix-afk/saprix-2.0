@@ -212,7 +212,7 @@ export default function FutsalHeader() {
               </span>
               <span className="flex items-center gap-2">
                 <span className="text-green-400 text-base">🚚</span>
-                <span>Envíos Gratis {'>'} $150.000</span>
+                <span>Envíos a todo el país</span>
               </span>
               <span className="flex items-center gap-2">
                 <span className="text-blue-400 text-base">💳</span>

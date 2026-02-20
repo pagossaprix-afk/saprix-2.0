@@ -20,7 +20,7 @@ export default function Page() {
 
         <section className="space-y-4 mb-10">
           <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Costos</h2>
-          <p className="text-gray-600 dark:text-gray-400">El valor del envío se calcula al finalizar la compra según destino y peso/volumen del paquete. Promociones de envío gratis se informan en el carrito y checkout.</p>
+          <p className="text-gray-600 dark:text-gray-400">El valor del envío se calcula al finalizar la compra según destino y el peso de los productos. Los costos son informados durante el proceso de pago.</p>
         </section>
 
         <section className="space-y-4 mb-10">

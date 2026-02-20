@@ -341,7 +341,7 @@ export default function ProductPageFigma({ mapped, images, colorOptions, sizeOpt
                 <div className="space-y-3 pt-4">
                   <div className="flex items-center gap-3 text-xs uppercase font-bold tracking-wide cursor-pointer hover:underline">
                     <Truck className="w-4 h-4" />
-                    <span>Envío gratis desde $300.000</span>
+                    <span>Envíos a todo el país</span>
                   </div>
                   <div className="flex items-center gap-3 text-xs uppercase font-bold tracking-wide cursor-pointer hover:underline">
                     <Shield className="w-4 h-4" />
