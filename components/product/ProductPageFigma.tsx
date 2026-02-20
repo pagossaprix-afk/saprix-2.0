@@ -59,14 +59,17 @@ export default function ProductPageFigma({ mapped, images, colorOptions, sizeOpt
   };
 
   const selectedVariantId = useMemo(() => {
-    const c = colorOptions.find((x) => x.option === selectedColor)?.variations ?? [];
     const s = sizeOptions.find((x) => x.option === selectedSize)?.variations ?? [];
+    if (colorOptions.length === 0) return s[0];
+
+    const c = colorOptions.find((x) => x.option === selectedColor)?.variations ?? [];
     const inter = c.filter((id) => s.includes(id));
     return inter[0];
   }, [selectedColor, selectedSize, colorOptions, sizeOptions]);
 
   const sizeAvailability = useMemo(() => {
     return sizeOptions.map((s) => {
+      if (colorOptions.length === 0) return { option: s.option, available: s.variations.length > 0 };
       const cvars = colorOptions.find((x) => x.option === selectedColor)?.variations ?? [];
       const inter = cvars.filter((id) => s.variations.includes(id));
       return { option: s.option, available: inter.length > 0 };
