@@ -2,7 +2,7 @@
 
 import { Fragment, useState, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { X, Ruler } from 'lucide-react';
+import { X, Ruler, ExternalLink } from 'lucide-react';
 import Image from 'next/image';
 
 interface SizeGuideProps {
@@ -15,6 +15,7 @@ interface SizeGuideProps {
 const GUIDES = [
     { id: 'kids', name: 'Saprix Kids', keywords: ['kids', 'niño', 'niña', 'infantil'], image: '/size-guide-kids.jpg' },
     { id: 'londres', name: 'Referencia Londres', keywords: ['londres'], image: '/size-guide-londres.jpg' },
+    { id: 'berlin', name: 'Referencia Berlin', keywords: ['berlin'], image: 'https://pagos.saprix.com.co/wp-content/uploads/2026/03/Copia-de-LONDRES.png' },
     { id: 'roma', name: 'Referencia Roma', keywords: ['roma'], image: '/size-guide-roma.jpg' },
     { id: 'tokio', name: 'Referencia Tokio', keywords: ['tokio'], image: '/size-guide-tokio.jpg' },
 ];
@@ -82,20 +83,36 @@ export default function SizeGuide({ isOpen, onClose, productName, categories }: 
                                         El calzado Unisex se ha diseñado y etiquetado según las tallas para hombre, pero están pensadas para que las use cualquier persona, independientemente de su género. Si normalmente no usás tallas para hombre, tal vez tengas que pedir una talla más pequeña a la que usás habitualmente. Verificá las medidas que aparecen a continuación y la relación en CM, para encontrar tu talla correcta.
                                     </p>
 
-                                    {/* Tabs */}
-                                    <div className="flex flex-wrap gap-2 mb-6 border-b border-gray-200 pb-1">
-                                        {GUIDES.map((guide) => (
-                                            <button
-                                                key={guide.id}
-                                                onClick={() => setActiveGuide(guide)}
-                                                className={`px-4 py-2 text-xs sm:text-sm font-bold uppercase tracking-wide transition-all border-b-2 ${activeGuide.id === guide.id
-                                                        ? 'border-black text-black'
-                                                        : 'border-transparent text-gray-500 hover:text-black hover:border-gray-300'
-                                                    }`}
-                                            >
-                                                {guide.name}
-                                            </button>
-                                        ))}
+                                    <style jsx>{`
+                                        .no-scrollbar::-webkit-scrollbar { display: none; }
+                                        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+                                    `}</style>
+                                    <div className="flex flex-col lg:flex-row lg:items-center justify-between border-b border-gray-200 mb-6 gap-4">
+                                        <div className="flex overflow-x-auto no-scrollbar -mb-px w-full">
+                                            <div className="flex gap-2 sm:gap-4">
+                                                {GUIDES.map((guide) => (
+                                                    <button
+                                                        key={guide.id}
+                                                        onClick={() => setActiveGuide(guide)}
+                                                        className={`px-2 sm:px-4 py-3 text-[10px] sm:text-sm font-bold uppercase tracking-tight transition-all border-b-2 whitespace-nowrap ${activeGuide.id === guide.id
+                                                                ? 'border-black text-black'
+                                                                : 'border-transparent text-gray-500 hover:text-black hover:border-gray-300'
+                                                            }`}
+                                                    >
+                                                        {guide.name}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <a
+                                            href={activeGuide.image}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-[10px] sm:text-xs font-black uppercase tracking-widest underline flex items-center gap-2 hover:text-blue-600 transition-colors py-2 flex-shrink-0"
+                                        >
+                                            <ExternalLink className="w-3 h-3 sm:w-4 h-4" />
+                                            Ver en nueva pestaña
+                                        </a>
                                     </div>
 
                                     {/* Size Chart Image */}

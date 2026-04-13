@@ -16,29 +16,29 @@ const banners = [
 
     {
         id: 0,
-        src: "/banners/nuevas-tokio-saprix.webp",
-        alt: "Nueva Colección Tokio Saprix",
+        src: "https://pagos.saprix.com.co/wp-content/uploads/2026/03/MILAN.webp",
+        alt: "Nueva Colección Milán Saprix",
         title: "Lllegaron las más pedidas",
-        subtitle: "Referencia",
+        subtitle: "Referencia Milán",
         link: "/tienda",
         align: "center",
-        buttonText: "Compralas yá!"
+        buttonText: "¡Cómpralas ya!"
     },
     {
         id: 1,
-        src: "/banners/Zapatillas Saprix - .ref Tokio Negra.webp",
-        alt: "Zapatillas Saprix Tokio Negra",
-        title: "Rendimiento Superior Tokio",
-        subtitle: "Control y tracción en negro",
+        src: "https://pagos.saprix.com.co/wp-content/uploads/2026/03/TORRETIN.webp",
+        alt: "Zapatillas Saprix Torretín",
+        title: "Saprix Torretín",
+        subtitle: "Control y tracción superior",
         link: "/tienda",
         align: "left" // Alineación del texto
     },
     {
         id: 2,
-        src: "/banners/Zapatillas Saprix - ref Tokio Morada_5_11zon.webp",
-        alt: "Zapatillas Saprix Tokio Morada",
-        title: "Estilo Único Tokio",
-        subtitle: "Diseñadas para destacar en morado",
+        src: "https://pagos.saprix.com.co/wp-content/uploads/2026/03/BERLIN.webp",
+        alt: "Zapatillas Saprix Berlín",
+        title: "Estilo Único Berlín",
+        subtitle: "Diseñadas para destacar",
         link: "/tienda",
         align: "left"
     },
@@ -57,7 +57,7 @@ const banners = [
         alt: "Zapatillas Saprix Roma",
         title: "Roma Edición Limitada",
         subtitle: "Exclusividad total y diseño premium",
-        link: "/tienda?featured=true",
+        link: "/tienda",
         align: "right"
     },
     {
@@ -66,7 +66,7 @@ const banners = [
         alt: "Accesorios Deportivos Saprix",
         title: "Accesorios Deportivos",
         subtitle: "Guantes, mochilas y balones",
-        link: "/ofertas",
+        link: "/tienda",
         align: "center"
     },
 ];

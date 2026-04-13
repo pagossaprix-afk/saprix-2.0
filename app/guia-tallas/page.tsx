@@ -8,6 +8,7 @@ import { Ruler, ArrowLeft } from 'lucide-react';
 const GUIDES = [
     { id: 'kids', name: 'Saprix Kids', keywords: ['kids', 'niño', 'niña', 'infantil'], image: '/size-guide-kids.jpg' },
     { id: 'londres', name: 'Referencia Londres', keywords: ['londres'], image: '/size-guide-londres.jpg' },
+    { id: 'berlin', name: 'Referencia Berlin', keywords: ['berlin'], image: 'https://pagos.saprix.com.co/wp-content/uploads/2026/03/Copia-de-LONDRES.png' },
     { id: 'roma', name: 'Referencia Roma', keywords: ['roma'], image: '/size-guide-roma.jpg' },
     { id: 'tokio', name: 'Referencia Tokio', keywords: ['tokio'], image: '/size-guide-tokio.jpg' },
 ];
@@ -33,12 +34,16 @@ export default function SizeGuidePage() {
 
                 <div className="bg-white border border-gray-200 shadow-sm">
                     {/* Tabs */}
-                    <div className="flex flex-wrap border-b border-gray-200">
+                    <style jsx>{`
+                        .no-scrollbar::-webkit-scrollbar { display: none; }
+                        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+                    `}</style>
+                    <div className="flex overflow-x-auto no-scrollbar border-b border-gray-200">
                         {GUIDES.map((guide) => (
                             <button
                                 key={guide.id}
                                 onClick={() => setActiveGuide(guide)}
-                                className={`px-6 py-4 text-sm font-bold uppercase tracking-wide transition-all border-b-2 hover:bg-gray-50 ${activeGuide.id === guide.id
+                                className={`px-6 py-4 text-xs sm:text-sm font-bold uppercase tracking-wide transition-all border-b-2 whitespace-nowrap hover:bg-gray-50 ${activeGuide.id === guide.id
                                     ? 'border-black text-black bg-gray-50'
                                     : 'border-transparent text-gray-500 hover:text-black hover:border-gray-300'
                                     }`}

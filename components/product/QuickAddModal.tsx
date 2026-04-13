@@ -2,7 +2,8 @@
 
 import { useState, useMemo } from "react";
 import Image from "next/image";
-import { X, ShoppingCart } from "lucide-react";
+import { X, ShoppingCart, Ruler } from "lucide-react";
+import SizeGuide from "./SizeGuide";
 import { useCart } from "@/context/CartContext";
 import { ensureHttps } from "@/lib/utils";
 import Link from "next/link";
@@ -30,6 +31,7 @@ export default function QuickAddModal({
     const [selectedColor, setSelectedColor] = useState<string>(colorOptions?.[0]?.option ?? "");
     const [selectedSize, setSelectedSize] = useState<string>(sizeOptions?.[0]?.option ?? "");
     const [quantity, setQuantity] = useState(1);
+    const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
     const { addItem } = useCart();
 
     const selectedVariantId = useMemo(() => {
@@ -200,9 +202,17 @@ export default function QuickAddModal({
                             {/* Size Selection */}
                             {sizeOptions && sizeOptions.length > 0 && (
                                 <div className="mb-4">
-                                    <label className="block text-xs font-bold uppercase text-gray-700 mb-2">
-                                        Talla: <span className="font-normal text-black">{selectedSize}</span>
-                                    </label>
+                                    <div className="flex justify-between items-center mb-2">
+                                        <label className="block text-xs font-bold uppercase text-gray-700">
+                                            Talla: <span className="font-normal text-black">{selectedSize}</span>
+                                        </label>
+                                        <button
+                                            onClick={() => setIsSizeGuideOpen(true)}
+                                            className="text-[10px] uppercase font-bold underline flex items-center gap-1 hover:text-blue-600 transition-colors"
+                                        >
+                                            <Ruler className="w-3 h-3" /> Guía de tallas
+                                        </button>
+                                    </div>
                                     <div className="grid grid-cols-6 gap-2">
                                         {sizeAvailability.map((sz) => (
                                             <button
@@ -293,6 +303,13 @@ export default function QuickAddModal({
                     </div>
                 </div>
             </div>
+
+            <SizeGuide
+                isOpen={isSizeGuideOpen}
+                onClose={() => setIsSizeGuideOpen(false)}
+                productName={product?.name || ""}
+                categories={product?.categories?.map((c: any) => c.name) || []}
+            />
         </div>
     );
 }
